@@ -1,0 +1,14 @@
+{
+  "title": "Hello World Stack",
+  "scope": "global",
+  "manager": "makerdao/testchain-stack-helloworld",
+  "deps": [
+    "testchain"
+  ],
+  "containers": {
+    "display": {
+      "image": "makerdao/testchain-stack-helloworld-display",
+      "ports": [3000]
+    }
+  }
+}
