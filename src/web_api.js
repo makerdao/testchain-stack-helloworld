@@ -94,7 +94,7 @@ module.exports = {
    */
   notify_failed(data = {}) {
     return request
-      .post(`${Config.get('webApi')}/stack/notify/ready`)
+      .post(`${Config.get('webApi')}/stack/notify/failed`)
       .send({
         id: Config.get('stackId'),
         stack_name: Config.get('stackName'),

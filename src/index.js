@@ -94,12 +94,16 @@ Service.init()
  */
 process.on('uncaughtException', async (err) => {
   console.error(err)
-  await web_api.notify_failed("Something is wrong")
+  await web_api
+    .notify_failed("Something is wrong")
+    .catch(console.error)
 })
 
 process.on('unhandledRejection', async (reason) => {
   console.error(reason)
-  await web_api.notify_failed("Something is wrong for promise")
+  await web_api
+    .notify_failed("Something is wrong for promise")
+    .catch(console.error)
 
   // Shutting down
   setTimeout(() => { process.exit(1) }, 1000)
