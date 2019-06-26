@@ -1,0 +1,32 @@
+language: node_js
+dist: xenial
+services: docker
+branches: # build all
+  only:
+  - gh-pages
+  - /.*/
+# before_install:
+# before_script:
+#   - npm install -g ganache-cli
+
+# env:
+#   global:
+#     - GANACHE_EXECUTABLE=ganache-cli
+
+node_js:
+  - '8'
+
+cache:
+  directories:
+    - node_modules
+
+script:
+  - npm test
+
+after_success:
+  - |
+    if [ "$TRAVIS_BRANCH" == "master" ]; then
+      echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      make build;
+      make docker-push;
+    fi
