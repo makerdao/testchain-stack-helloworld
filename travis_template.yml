@@ -3,30 +3,52 @@ dist: xenial
 services: docker
 branches: # build all
   only:
-  - gh-pages
   - /.*/
-# before_install:
-# before_script:
-#   - npm install -g ganache-cli
-
-# env:
-#   global:
-#     - GANACHE_EXECUTABLE=ganache-cli
-
 node_js:
   - '8'
-
 cache:
   directories:
     - node_modules
-
+before_install: # set up env for tests. e.g.
+- npm install -g npm@latest
+before_script:
+- npm --version
 script:
   - npm test
+env:
+  global:
+  - NODE_ENV=production #any envvar can be set here
+  - secure: <string> # Use travis.rb to encrypt secrets
+  - secure: <string> # https://github.com/travis-ci/travis.rb / https://docs.travis-ci.com/user/environment-variables/#encrypting-environment-variables
 
-after_success:
-  - |
-    if [ "$TRAVIS_BRANCH" == "master" ]; then
-      echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      make build;
-      make docker-push;
-    fi
+# This example pushes two tags for master and develop branch. 
+# Update accordingly to match repo structure  
+#
+# Images must be public
+#
+
+deploy:
+- provider: script
+  script: >-
+    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin && 
+    make build TAG=dev &&
+    make docker-push TAG=dev
+  on:
+    branch: develop
+  skip_cleanup: true
+- provider: script
+  script: >-
+    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin && 
+    make build TAG=latest &&
+    make docker-push TAG=latest
+  on:
+    branch: master
+  skip_cleanup: true
+
+# Optional notifications  
+notifications:
+  webhooks:
+    urls:
+    - secure: <string> # Use travis.rb to encrypt notification URIs
+    on_failure: always
+    on_success: never
