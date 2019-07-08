@@ -11,9 +11,11 @@ install:
 	@echo "Seting up config files"
 	@if [ ! -d $(STACK_CONFIG_PATH) ]; then \
         mkdir -p $(STACK_CONFIG_PATH); \
-				ln -s $(CURDIR)/stack_config/* $(STACK_CONFIG_PATH); \
+				cp -R $(CURDIR)/stack_config/* $(STACK_CONFIG_PATH); \
 	else \
-				echo "$(STACK_CONFIG_PATH) already exist. Nothing to do..."; \
+				echo "$(STACK_CONFIG_PATH) already exist. Replacing configs..."; \
+				rm -rf $(STACK_CONFIG_PATH)/*; \
+				cp -R $(CURDIR)/stack_config/* $(STACK_CONFIG_PATH); \
   fi
 .PHONY: install
 
