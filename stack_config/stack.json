@@ -1,5 +1,6 @@
 {
   "title": "Hello World Stack",
+  "name": "helloworld",
   "scope": "global",
   "manager": "makerdao/testchain-stack-helloworld",
   "deps": [

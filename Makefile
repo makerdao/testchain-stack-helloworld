@@ -23,6 +23,11 @@ build:
 	@docker build -t $(DOCKER_ID_USER)/testchain-stack-$(STACK_NAME) .
 .PHONY: build
 
+docker-pull:
+	@docker pull makerdao/testchain-stack-helloworld
+	@docker pull makerdao/testchain-stack-helloworld-display
+.PHONY: docker-pull
+
 docker-push:
 	@echo "Pushing docker image"
 	@docker push $(DOCKER_ID_USER)/testchain-stack-$(STACK_NAME)
