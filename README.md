@@ -7,7 +7,7 @@
 -   [Yarn](https://yarnpkg.com/en/)
 -   [Docker Compose](https://docs.docker.com/compose/)
     -   The docker compose service manages all the docker images needed for the setup and use of the testchain environment.
--   [Testchain-backendgateway](https://github.com/makerdao/testchain-backendgateway)
+-   [Staxx](https://github.com/makerdao/staxx)
     -   Instructions on getting the local testchain setup and running are below.
 
 ## Testchain Installation
@@ -19,23 +19,23 @@ Before starting, you should confirm that you have docker compose up and running.
 In order to get started with stacks, we first need to get the testchain up and running. Follow the steps below to do so:
 
 1.  Open up a fresh new terminal window.
-2.  `git clone git@github.com:makerdao/testchain-backendgateway.git`
-3.  `cd testchain-backendgateway`
+2.  `git clone git@github.com:makerdao/staxx.git`
+3.  `cd staxx`
     1.  Check to make sure it is up to date by running `git pull`.
     2.  Check out `develop` branch `git checkout develop`.
 
 ## Getting the testchain up and running
 
 1.  The next step is to pull everything from the docker container:
-    
+
     1.  Run `make run-dev`
         1.  This step pulls all the images from docker down and will start the QA portal in docker images and then will set `localhost:4001` for the UI and `localhost:4000` for the WS/Web API.
-        2.  You will see that it will immediately start pulling from the testchain-backendgateway.
-    
+        2.  You will see that it will immediately start pulling from the staxx.
+
     If you had some `testchain-***` docker images you have to run `make upgrade-dev` before running `make run-dev`.
-    
+
 2.  Once everything has been pulled down, the next step is to check the logs:
-    
+
     1.  Run `make logs-dev`
         1.  This command will display all the logs from testchain network.
         2.  When running this, you want to keep an eye out for the first code block to confirm. This will confirm that it is indeed working for you.
@@ -46,7 +46,7 @@ The first block should appear in your terminal window as follows:
 master ✓ make logs-deploy
 Attaching to testchain-deployment.local
 testchain-deployment.local  | time="2019-04-11T07:56:14Z" level=info msg="Config loaded" app=TCD
-testchain-deployment.local  | time="2019-04-11T07:56:14Z" level=debug msg="Config: &{Server:HTTP Host:testchain-deployment Port:5001 Deploy:{DeploymentDirPath:/deployment DeploymentSubPath:./ ResultSubPath:out/addresses.json} Gateway:{Host:testchain-backendgateway.local Port:4000 ClientTimeoutInSecond:5 RegisterPeriodInSec:10} Github:{RepoOwner:makerdao RepoName:testchain-dss-deployment-scripts DefaultCheckoutTarget:tags/qa-deploy} NATS:{ErrorTopic:error GroupName:testchain-deployment TopicPrefix:Prefix Servers:nats://nats.local:4222 MaxReconnect:3 ReconnectWaitSec:1} LogLevel:debug}" app=TCD
+testchain-deployment.local  | time="2019-04-11T07:56:14Z" level=debug msg="Config: &{Server:HTTP Host:testchain-deployment Port:5001 Deploy:{DeploymentDirPath:/deployment DeploymentSubPath:./ ResultSubPath:out/addresses.json} Gateway:{Host:staxx.local Port:4000 ClientTimeoutInSecond:5 RegisterPeriodInSec:10} Github:{RepoOwner:makerdao RepoName:testchain-dss-deployment-scripts DefaultCheckoutTarget:tags/qa-deploy} NATS:{ErrorTopic:error GroupName:testchain-deployment TopicPrefix:Prefix Servers:nats://nats.local:4222 MaxReconnect:3 ReconnectWaitSec:1} LogLevel:debug}" app=TCD
 testchain-deployment.local  | time="2019-04-11T07:56:14Z" level=info msg="Start service with host: testchain-deployment, port: 5001" app=TCD
 testchain-deployment.local  | time="2019-04-11T07:56:14Z" level=info msg="First update src started, it takes a few minutes" app=TCD
 
@@ -114,7 +114,7 @@ In terms of debugging your stack from the logs, the most common issue that arise
     -   If it can't fetch the deployment steps, you would see something like `failed to fetch deployments`
     -   If it fetches the steps correctly, but the deployment still fails you would see something such as `deployment failed` alongside a long list of error messaging.
 -   **Question:** When running an instance within the `Default Chain - No Deployment`. Does it require a particular deployment step to be completed first?
-   -  **Answer:** 
+   -  **Answer:**
 	   - A step needs to be selected in order to trigger the deployment service. Currently, the step selection no longer matters, since there is only one config: `deploy-testchain.json`
 	        -  Reference: [](https://github.com/makerdao/dss-deploy-scripts)[https://github.com/makerdao/dss-deploy-scripts](https://github.com/makerdao/dss-deploy-scripts)
 
@@ -181,7 +181,7 @@ The Hello World stack contains two different services:
 
 All details that are within the `stack_config` should be placed into the stacks config folder.
 
-If you are using `docker-compose` for starting the Testchain Dashboard from [](https://github.com/makerdao/testchain-backendgateway)[https://github.com/makerdao/testchain-backendgateway](https://github.com/makerdao/testchain-backendgateway), you have to place two files from `stack_config` into the `/tmp/stacks/helloworld` folder on your machine and only after this should you start the local environment.
+If you are using `docker-compose` for starting the Testchain Dashboard from [https://github.com/makerdao/staxx](https://github.com/makerdao/staxx), you have to place two files from `stack_config` into the `/tmp/stacks/helloworld` folder on your machine and only after this should you start the local environment.
 
 **The Stack configuration folder consists of 2 files:**
 -   `stack.json`: The main stack configuration
@@ -303,10 +303,10 @@ curl --request POST \\
 
 When the system starts and spawns a new testchain (EVM), it starts the stack manager services simultaneously.
 
-When the testchain-backendgateway starts a new stack manager service, it will pass a list of default ENV values such as:
+When the staxx starts a new stack manager service, it will pass a list of default ENV values such as:
 
 -   `STACK_ID`: The deployment scope ID that the stack is related to.
--   `STACK_NAME`: The name of the stack. 
+-   `STACK_NAME`: The name of the stack.
 	- In this example, it will be `helloworld`
 -   `WEB_API_URL`: Full URL for the backendgateway API service.
 -   `NATS_URL` : The [NATS.io](http://nats.io/) event bus address for handling testchain events.
@@ -323,7 +323,7 @@ When the testchain-backendgateway starts a new stack manager service, it will pa
 
 When using these ENV values, the Stack manager service should subscribe to the NATS event bus by topic `chain.${stack_id}`.
 
-After subscribing to the service, you will receive all [events](https://github.com/makerdao/testchain-backendgateway/blob/master/docs/EVENTS.md) for the started testchain. In this example, we are looking for the `deployed` event to retrieve a list of available contracts.
+After subscribing to the service, you will receive all [events](https://github.com/makerdao/staxx/blob/master/docs/EVENTS.md) for the started testchain. In this example, we are looking for the `deployed` event to retrieve a list of available contracts.
 
 -   See the [src/nats.js](https://www.notion.so/makerdao/src/nats.js) file to learn more about the subscribing details.
 
@@ -404,7 +404,7 @@ request
 
 ```
 
-## [Reference for Full Backend API Setup](https://github.com/makerdao/testchain-backendgateway/blob/master/docs/API.md)
+## [Reference for Full Backend API Setup](https://github.com/makerdao/staxx/blob/master/docs/API.md)
 
 In order to get the output from the display service, you will have to call stack/info using the following command:
 
